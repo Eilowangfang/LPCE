@@ -13,9 +13,9 @@ LPCE has to be unpacked into contrib directory and then to be compiled and
 installed with `make install`.
 
 ```
-cd contrib/LPCE                                                   # enter aqo directory
+cd contrib/LPCE                                                  # enter aqo directory
 make && make install                                             # install LPCE
-make clean && make && make install                                             # (if re-install LPCE)
+make clean && make && make install                               # (if re-install LPCE)
 ```
 
 In your database:
