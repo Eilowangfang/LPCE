@@ -34,13 +34,11 @@ of per-database.
 
 ## Usage
 
-In `cardinality_estimation.c` file (19 line), place the path to call LPCE estimator:
+In `cardinality_estimation.c` file (19 line), place the path to call LPCE estimator (you may also call your own learning-based esitmator):
 
 `char cmd[10240] = "python3 /YOUR/PATH/TO/LPCE/parser.py ";`
 
-If you want to use your own learning-based estimator, please replace the
-
-Enable LPCE in PostgreSQL:
+Enable LPCE (or your estimator) in PostgreSQL:
 
 `set lpce.mode="learned";`
 
