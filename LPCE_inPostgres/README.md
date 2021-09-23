@@ -26,9 +26,7 @@ Modify your postgresql.conf:
 
 `shared_preload_libraries = 'LPCE'`
 
-and restart PostgreSQL.
-
-It is essential that library is preloaded during server startup, because
+and restart PostgreSQL. It is essential that library is preloaded during server startup, because
 adaptive query optimization must be enabled on per-cluster basis instead
 of per-database.
 
@@ -44,7 +42,7 @@ If you want to use your own learning-based estimator, please replace the
 
 Enable LPCE in PostgreSQL:
 
-`LPCE.mode = 'set lpce.mode="learned";'`
+`'set lpce.mode="learned";'`
 
 
 Execute SQL query:
