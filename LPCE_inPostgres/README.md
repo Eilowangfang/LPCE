@@ -42,7 +42,7 @@ If you want to use your own learning-based estimator, please replace the
 
 Enable LPCE in PostgreSQL:
 
-`'set lpce.mode="learned";'`
+`set lpce.mode="learned";`
 
 
 Execute SQL query:
