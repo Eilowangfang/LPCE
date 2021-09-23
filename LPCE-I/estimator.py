@@ -22,7 +22,8 @@ def paraser(query):
 
     torch.cuda.set_device(GPU_no)
     model = SRU(cuda_use, feature_dim, input_dim, mem_dim, hidden_dim)
-    model.load_state_dict(torch.load('/home/dbgroup/csfwang/open/LPCE-I/model/LPCE_15.pth_LPCE', map_location='cpu'))
+    path = os.path.join(os.path.abspath('.'), "model/example_model.pth")
+    model.load_state_dict(torch.load(path, map_location='cpu'))
     caller = Caller(cuda_use, model, min_label, max_label, operat_dim, tb_dim, filter_dim, join_dim)
 
     start_time = time.time()
