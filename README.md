@@ -27,5 +27,5 @@ The return contains:
 ## Call LPCE in PostgreSQL
 LPCE can be called in PostgreSQL.
 LPCE can used to provide cardinality estimation for plan search in PostgreSQL.
-Moreover, we also provide a generic cardinality estimator adopter for PostgreSQL, so that any learning-based estimator can be easily used to provide cardinality estimation. 
+Moreover, we also provide a generic cardinality estimation adopter for PostgreSQL, so that any learning-based estimator can be easily used to provide cardinality estimation. 
 For details, please check in `/LPCE_inPostgres`.
