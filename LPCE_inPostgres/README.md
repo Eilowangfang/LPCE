@@ -50,8 +50,8 @@ Execute SQL query:
 
 
 
-## Reference
-LPCE is referenced to [AQO](https://github.com/postgrespro/aqo) ([Adaptive Cardinality Estimation](https://arxiv.org/abs/1711.08330)) implementation as an extension tool for PostgreSQL.
+## Acknowledgment
+LPCE is based on [AQO](https://github.com/postgrespro/aqo) ([Adaptive Cardinality Estimation](https://arxiv.org/abs/1711.08330)) implementation as an extension tool for PostgreSQL.
 
 
 
