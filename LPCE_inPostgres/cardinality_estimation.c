@@ -16,7 +16,7 @@ void call_learncard(){
     strcat(query_stm, "\"");
     //Call LPCE
     //You can also call your estimator here
-    char cmd[10240] = "python3 /home/dbgroup/csfwang/LPCEI/LPCE_postgres/parser.py ";
+    char cmd[10240] = "python3 /YOUR/PATH/TO/LPCE/parser.py ";
     strcat(cmd,query_stm);
     f = popen(cmd, "r");
     while((ret=fread(src,1,10240,f))>0) {
