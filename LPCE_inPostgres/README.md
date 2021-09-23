@@ -46,7 +46,8 @@ Enable LPCE in PostgreSQL:
 
 
 Execute SQL query:
-`EXPLAIN ANALYZE SQL QUERY'
+
+`EXPLAIN ANALYZE SQL QUERY`
 
 
 
