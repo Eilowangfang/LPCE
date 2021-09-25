@@ -29,7 +29,7 @@ There are query workloads for testing. The queries are formatted as:
 ```
 SQL QUERY#End-to-end execution#Cardinality
 ```
-Here the end-to-end execution is the time of executing the query on PostgreSQL 13.0.
+Here the end-to-end execution is the time (unit ms) of executing the query on PostgreSQL 13.0.
 
 
 
