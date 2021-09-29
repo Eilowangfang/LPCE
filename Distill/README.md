@@ -81,7 +81,7 @@ The mode could be configured as `Train` for training a model, or `Test` for infe
 
 
 
-
+&nbsp; 
 ## Call LPCE in PostgreSQL
 LPCE can be called in PostgreSQL.
 LPCE can used to provide cardinality estimation for plan search in PostgreSQL.
