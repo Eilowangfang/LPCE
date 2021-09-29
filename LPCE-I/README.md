@@ -2,6 +2,8 @@
 # LPCE
 This is for paper submission: "Speeding Up End-to-end Query Execution via Learning-based Progressive Cardinality Estimation".
 
+<br/> 
+
 ## LPCE-I
 In `LPCE-I` directory:
 
@@ -24,4 +26,25 @@ The return contains:
 3) a list of estimated cardinalities. 
 
 
-## Call LPCE-I in PostgreSQL
+In `workload` directory:
+There are query workloads for testing. The queries are formatted as:
+```
+SQL QUERY#End-to-end execution#Cardinality
+```
+Here the end-to-end execution is the time (unit ms) of executing the query on PostgreSQL 13.0.
+
+In `model` directory:
+there is an example ready model `example_model.pth`, which can be further compressed via knowledge distillation.
+
+
+
+
+
+
+
+
+
+
+
+
+
