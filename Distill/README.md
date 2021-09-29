@@ -2,6 +2,8 @@
 # LPCE
 This is for paper submission: "Speeding Up End-to-end Query Execution via Learning-based Progressive Cardinality Estimation".
 
+<br/> 
+
 ## LPCE-I
 In `LPCE-I` directory:
 
@@ -37,6 +39,7 @@ there is an example ready model `example_model.pth`, which can be further compre
 
 
 
+<br/> 
 
 ## Distillation
 In `Distill` directory:
@@ -51,6 +54,7 @@ and `trainer_distll.py` that guides the training flow with teacher model, which 
 
 
 
+<br/> 
 
 ## LPCE-R
 In `LPCE-R` directory:
@@ -81,7 +85,10 @@ The mode could be configured as `Train` for training a model, or `Test` for infe
 
 
 
-&nbsp; 
+
+
+<br/> 
+ 
 ## Call LPCE in PostgreSQL
 LPCE can be called in PostgreSQL.
 LPCE can used to provide cardinality estimation for plan search in PostgreSQL.
@@ -121,6 +128,22 @@ of per-database.
 In `cardinality_estimation.c` file (19 line), place the path to call LPCE estimator (you may also call your own learning-based esitmator):
 
 `char cmd[10240] = "python3 /YOUR/PATH/TO/LPCE/parser.py ";`
+
+Enable LPCE (or your estimator) in PostgreSQL:
+
+`set lpce.mode="learned";`
+
+
+Execute SQL query:
+
+`EXPLAIN ANALYZE SQL QUERY`
+
+
+
+
+### Acknowledgment
+LPCE is based on [AQO](https://github.com/postgrespro/aqo) ([Adaptive Cardinality Estimation](https://arxiv.org/abs/1711.08330)) implementation as an extension tool for PostgreSQL.
+
 
 Enable LPCE (or your estimator) in PostgreSQL:
 
