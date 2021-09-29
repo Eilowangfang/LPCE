@@ -26,7 +26,3 @@ python3  lpcer.py
 The training set is `/data/train10K`.
 The testing set is `/queries` used for evaluating the estimation error during training. 
 The mode could be configured as `Train` for training a model, or `Test` for inference in `lpcer.py`.
-
-In `model` directory:
-there is an example ready models, which can be further compressed via knowledge distillation.
-
