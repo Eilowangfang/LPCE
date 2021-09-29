@@ -31,6 +31,11 @@ SQL QUERY#End-to-end execution#Cardinality
 ```
 Here the end-to-end execution is the time (unit ms) of executing the query on PostgreSQL 13.0.
 
+In `model` directory:
+there is an example ready model `example_model.pth`, which can be further compressed via knowledge distillation.
+
+
+
 
 ## LPCE-R
 In `LPCE-R` directory:
@@ -55,6 +60,8 @@ The training set is `/data/train10K`.
 The testing set is `/queries` used for evaluating the estimation error during training. 
 The mode could be configured as `Train` for training a model, or `Test` for inference in `lpcer.py`.
 
+In `model` directory:
+there is an example ready models, which can be further compressed via knowledge distillation.
 
 
 
