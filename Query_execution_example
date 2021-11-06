@@ -3,9 +3,12 @@ EXPLAIN ANALYZE SELECT COUNT(*) FROM cast_info ci,movie_info mi,movie_info_idx m
 AND ci.movie_id=mk.movie_id AND mk.keyword_id=k.id AND ci.movie_id=ml.movie_id AND ci.role_id=5 AND mi.id<939 AND mi_idx.id<515577 AND mk.id<24089 AND k.keyword>5756 AND ml.linked_movie_id<883860;
 
 
+
+
+
 ---------------------------------------------------------Query Execution with native PostgreSQL-------------------------------------------------------------------
 
-                                                                                               QUERY PLAN                  
+                                                                     QUERY PLAN                  
                                                                              
 ---------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -77,8 +80,6 @@ me=0.001..7.946 rows=128414 loops=93348)
                                                    Rows Removed by Filter: 5756
  Planning Time: 4.772 ms
  Execution Time: 1117511.050 ms
-
-
 
 
 
