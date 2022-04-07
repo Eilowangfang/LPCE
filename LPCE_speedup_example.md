@@ -1,4 +1,4 @@
-###Example of speeding up long-time execution with LPCE
+###  Example of speeding up long-time execution with LPCE
 The query execution time drops from 723889.536ms on PostgreSQL to 1869.996ms with LPCE.
 
 Query: 
@@ -109,7 +109,7 @@ QUERY PLAN on PostgreSQL with LPCE-I
 ```
 
 
-###Example 1 of speeding up long-time execution with LPCE
+### Example 1 of speeding up long-time execution with LPCE
 The query execution time drops from 253265.179ms on PostgreSQL to 7745.517ms with LPCE-I,
 and 4106.392ms with LPCE-R.
 Query:
@@ -274,7 +274,7 @@ QUERY PLAN with LPCE-R
 
 
 
-###Example 2 of speeding up long-time execution with LPCE
+### Example 2 of speeding up long-time execution with LPCE
 QUERY PLAN on PostgreSQL
 ``` 
  Aggregate  (cost=970680.16..970680.17 rows=1 width=8) (actual time=24779.447..24779.453 rows=1 loops=1)
