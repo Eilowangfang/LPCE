@@ -112,6 +112,7 @@ QUERY PLAN on PostgreSQL with LPCE-I
 ### Example 1 of speeding up long-time execution with LPCE
 The query execution time drops from 253265.179ms on PostgreSQL to 7745.517ms with LPCE-I,
 and 4106.392ms with LPCE-R.
+
 Query:
 ```
 SELECT COUNT(*) FROM title t,movie_companies mc,cast_info ci,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,keyword k WHERE t.id=mc.movie_id AND t.id=ci.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id 
@@ -275,6 +276,13 @@ QUERY PLAN with LPCE-R
 
 
 ### Example 2 of speeding up long-time execution with LPCE
+The query execution time drops from 24779.757ms on PostgreSQL to 8388.941ms with LPCE-I, and 6281.196ms with LPCE-R.
+
+Query:
+``` 
+SELECT COUNT(*) FROM title t,movie_companies mc,cast_info ci,movie_info mi,movie_keyword mk,keyword k,movie_link ml WHERE t.id=mc.movie_id AND t.id=ci.movie_id AND t.id=mi.movie_id AND t.id=mk.movie_id AND mk.keyword_id=k.id AND t.id=ml.movie_id AND t.production_year<1968 AND mc.id<494049 AND ci.role_id=3 AND mi.info_type_id=17 AND mk.id<933418 AND k.keyword>42312 AND ml.linked_movie_id>976930;
+``` 
+
 QUERY PLAN on PostgreSQL
 ``` 
  Aggregate  (cost=970680.16..970680.17 rows=1 width=8) (actual time=24779.447..24779.453 rows=1 loops=1)
