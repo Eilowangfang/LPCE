@@ -2,8 +2,6 @@
 # LPCE
 This is for paper submission: "Speeding Up End-to-end Query Execution via Learning-based Progressive Cardinality Estimation".
 
-## FOR Author Feedback (updated at 11/07/2021)
-"Query execution example" shows an query example running on native PostgreSQL and PostgreSQL using LPCE, in which execution time is reduced from 1117.5s to 2.1s.
 
 <br/> 
 
