@@ -78,7 +78,7 @@ QUERY PLAN with LPCE-I
                                  Join Filter: (mi_idx.movie_id = t.id)
                                  ->  Hash Join  (cost=27576.83..109207.89 rows=3528 width=8) (actual time=274.032..1091.531 rows=991795 loops=1)
                                        Hash Cond: (mk.movie_id = mi_idx.movie_id)
-                                       ->  Hash Join  (cost=2310.09..83881.63 rows=8233 width=4) (actual time=20.511..673.250 rows=441702 loops=1)
+                                       ->  Hash Join  (cost=2310.09..83881.63 rows=14233 width=4) (actual time=20.511..673.250 rows=441702 loops=1)
                                              Hash Cond: (mk.keyword_id = k.id)
                                              ->  Seq Scan on movie_keyword mk  (cost=0.00..81003.12 rows=142735 width=8) (actual time=12.351..312.192 rows=4254632 loops=1)
                                                    Filter: (id > 269298)
