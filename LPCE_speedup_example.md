@@ -112,7 +112,7 @@ QUERY PLAN with LPCE-I
 QUERY PLAN with LPCE-R 
 ```  
   Aggregate  (cost=1006616.76..1006616.77 rows=1 width=8) (actual time=3851.728..3856.732 rows=1 loops=1)
-    ->  Hash Join  (cost=322279.42..1006616.36 rows=160 width=0) (actual time=2122.160..3850.522 rows=4525 loops=1)
+    ->  Hash Join  (cost=322279.42..1006616.36 rows=2160 width=0) (actual time=2122.160..3850.522 rows=4525 loops=1)
           Hash Cond: (ci.movie_id = t.id)
           ->  Seq Scan on cast_info ci  (cost=0.00..683910.90 rows=113582 width=4) (actual time=0.022..1820.681 rows=3049411 loops=1)
                 Filter: (person_id < 295875)
