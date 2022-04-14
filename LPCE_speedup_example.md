@@ -61,8 +61,8 @@ QUERY PLAN with PostgreSQL
 
 QUERY PLAN with LPCE-I
 ```
- Aggregate  (cost=1117238.19..1117238.20 rows=1 width=8) (actual time=7728.194..7728.199 rows=1 loops=1)
-   ->  Hash Join  (cost=160394.74..1117233.74 rows=1779 width=0) (actual time=7676.848..7728.043 rows=4525 loops=1)
+ Aggregate  (cost=1117238.19..1117238.20 rows=1 width=8) (actual time=8057.194..8100.199 rows=1 loops=1)
+   ->  Hash Join  (cost=160394.74..1117233.74 rows=1779 width=0) (actual time=7676.848..8051.043 rows=4525 loops=1)
          Hash Cond: (t.id = mc.movie_id)
          ->  Nested Loop  (cost=113083.68..1069918.26 rows=494 width=20) (actual time=5577.013..7385.247 rows=2968 loops=1)
                Join Filter: (t.id = mi.movie_id)
@@ -106,14 +106,13 @@ QUERY PLAN with LPCE-I
                ->  Seq Scan on movie_companies mc  (cost=0.00..46718.11 rows=47436 width=4) (actual time=74.572..164.291 rows=1056422 loops=1)
                      Filter: (id > 1552707)
                      Rows Removed by Filter: 1552707
- Planning Time: 657.753 ms
- Execution Time: 7745.517 ms
+ Execution Time: 8145.517 ms
 ```
 
 QUERY PLAN with LPCE-R 
 ```  
-  Aggregate  (cost=1006616.76..1006616.77 rows=1 width=8) (actual time=4104.728..4104.732 rows=1 loops=1)
-    ->  Hash Join  (cost=322279.42..1006616.36 rows=160 width=0) (actual time=2122.160..4104.522 rows=4525 loops=1)
+  Aggregate  (cost=1006616.76..1006616.77 rows=1 width=8) (actual time=3851.728..3856.732 rows=1 loops=1)
+    ->  Hash Join  (cost=322279.42..1006616.36 rows=160 width=0) (actual time=2122.160..3850.522 rows=4525 loops=1)
           Hash Cond: (ci.movie_id = t.id)
           ->  Seq Scan on cast_info ci  (cost=0.00..683910.90 rows=113582 width=4) (actual time=0.022..1820.681 rows=3049411 loops=1)
                 Filter: (person_id < 295875)
@@ -156,8 +155,7 @@ QUERY PLAN with LPCE-R
                                                     Index Cond: (id = mi.movie_id)
                                                     Filter: (production_year = 1963)
                                                     Rows Removed by Filter: 1
-  Planning Time: 881.679 ms
-  Execution Time: 4106.392 ms   
+  Execution Time: 3906.392 ms   
 ```
 
 
@@ -224,7 +222,6 @@ oops=1)
                            ->  Seq Scan on keyword k  (cost=0.00..2271.12 rows=91963 width=4) (actual time=0.008..10.199 rows=91857 loops=1)
                                  Filter: (keyword > 42312)
                                  Rows Removed by Filter: 42313
- Planning Time: 2.427 ms
  Execution Time: 24779.757 ms
 ``` 
 
@@ -280,7 +277,6 @@ QUERY PLAN with LPCE-I
                ->  Seq Scan on movie_companies mc  (cost=0.00..46718.11 rows=19788 width=4) (actual time=0.026..143.217 rows=494048 loops=1)
                      Filter: (id < 494049)
                      Rows Removed by Filter: 2115081
- Planning Time: 626.815 ms
  Execution Time: 8388.941 ms
 ```  
 
@@ -332,8 +328,7 @@ QUERY PLAN with LPCE-R
                ->  Seq Scan on movie_link ml  (cost=0.00..1074.93 rows=10209 width=4) (actual time=0.029..13.089 rows=42300 loops=1)
                      Filter: (linked_movie_id > 976930)
                      Rows Removed by Filter: 17694
- Planning Time: 858.474 ms
- Execution Time: 6281.196 ms
+ Execution Time: 6381.196 ms
 ``` 
 
 
@@ -452,6 +447,5 @@ QUERY PLAN on PostgreSQL with LPCE-I
                ->  Seq Scan on movie_info_idx mi_idx  (cost=0.00..24710.44 rows=48831 width=4) (actual time=0.025..111.016 rows=1073107 loops=1)
                      Filter: (id < 1073108)
                      Rows Removed by Filter: 306928
- Planning Time: 649.617 ms
- Execution Time: 1869.996 ms
+ Execution Time: 2169.996 ms
 ```
