@@ -1,114 +1,3 @@
-###  Example of speeding up long-time execution with LPCE
-The query execution time drops from 723889.536ms on PostgreSQL to 1869.996ms with LPCE.
-
-Query: 
-```
-SELECT COUNT(*) FROM title t,movie_companies mc,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,keyword k,movie_link ml WHERE t.id=mc.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id 
-AND t.id=mk.movie_id AND mk.keyword_id=k.id AND t.id=ml.movie_id AND t.production_year<1980 AND mc.id>967215 AND mi.info_type_id=42 AND mi_idx.id<1073108 AND mk.id<323877 AND ml.linked_movie_id<1142364;
-```
-
-QUERY PLAN on PostgreSQL                                                                                     
-```
- Aggregate  (cost=438085.18..438085.19 rows=1 width=8) (actual time=723887.508..723887.573 rows=1 loops=1)
-   ->  Nested Loop  (cost=352282.24..438085.17 rows=1 width=0) (actual time=1537.609..723869.880 rows=62484 loops=1)
-         Join Filter: (mk.keyword_id = k.id)
-         Rows Removed by Join Filter: 8383415796
-         ->  Hash Join  (cost=352282.24..434472.35 rows=1 width=4) (actual time=1382.189..1522.423 rows=62484 loops=1)
-               Hash Cond: (mk.movie_id = t.id)
-               ->  Seq Scan on movie_keyword mk  (cost=0.00..81003.12 rows=316526 width=8) (actual time=121.044..241.584 rows=323876 loops=1)
-                     Filter: (id < 323877)
-                     Rows Removed by Filter: 4200054
-               ->  Hash  (cost=352282.18..352282.18 rows=5 width=20) (actual time=1257.629..1257.629 rows=1884 loops=1)
-                     Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 112kB
-                     ->  Hash Join  (cost=299378.17..352282.18 rows=5 width=20) (actual time=1098.082..1257.407 rows=1884 loops=1)
-                           Hash Cond: (mc.movie_id = t.id)
-                           ->  Seq Scan on movie_companies mc  (cost=0.00..46718.11 rows=1649559 width=4) (actual time=0.018..169.145 rows=1641914 loops=1)
-                                 Filter: (id > 967215)
-                                 Rows Removed by Filter: 967215
-                           ->  Hash  (cost=299378.08..299378.08 rows=7 width=16) (actual time=992.582..992.582 rows=1656 loops=1)
-                                 Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 94kB
-                                 ->  Hash Join  (cost=270658.21..299378.08 rows=7 width=16) (actual time=851.140..992.423 rows=1656 loops=1)
-                                       Hash Cond: (mi_idx.movie_id = t.id)
-                                       ->  Seq Scan on movie_info_idx mi_idx  (cost=0.00..24710.44 rows=1069165 width=4) (actual time=16.579..98.994 rows=1073107 loops=1)
-                                             Filter: (id < 1073108)
-                                             Rows Removed by Filter: 306928
-                                       ->  Hash  (cost=270657.99..270657.99 rows=17 width=12) (actual time=832.516..832.516 rows=552 loops=1)
-                                             Buckets: 1024  Batches: 1  Memory Usage: 32kB
-                                             ->  Nested Loop  (cost=268711.92..270657.99 rows=17 width=12) (actual time=831.343..832.465 rows=552 loops=1)
-                                                   Join Filter: (mi.movie_id = t.id)
-                                                   ->  Merge Join  (cost=268711.49..268817.82 rows=405 width=8) (actual time=829.655..831.048 rows=766 loops=1)
-                                                         Merge Cond: (mi.movie_id = ml.movie_id)
-                                                         ->  Sort  (cost=266190.65..266211.67 rows=8407 width=4) (actual time=822.496..822.501 rows=27 loops=1)
-                                                               Sort Key: mi.movie_id
-                                                               Sort Method: quicksort  Memory: 498kB
-                                                               ->  Seq Scan on movie_info mi  (cost=0.00..265642.62 rows=8407 width=4) (actual time=710.332..821.258 rows=6509 loops=1)
-                                                                     Filter: (info_type_id = 42)
-                                                                     Rows Removed by Filter: 14829211
-                                                         ->  Sort  (cost=2520.54..2571.07 rows=20214 width=4) (actual time=6.795..7.523 rows=20658 loops=1)
-                                                               Sort Key: ml.movie_id
-                                                               Sort Method: quicksort  Memory: 1720kB
-                                                               ->  Seq Scan on movie_link ml  (cost=0.00..1074.93 rows=20214 width=4) (actual time=0.010..3.996 rows=20298 loops=1)
-                                                                     Filter: (linked_movie_id < 1142364)
-                                                                     Rows Removed by Filter: 39696
-                                                   ->  Index Scan using title_pkey on title t  (cost=0.43..4.53 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=766)
-                                                         Index Cond: (id = ml.movie_id)
-                                                         Filter: (production_year < 1980)
-                                                         Rows Removed by Filter: 0
-         ->  Seq Scan on keyword k  (cost=0.00..1935.70 rows=134170 width=4) (actual time=0.001..5.600 rows=134170 loops=62484)
- Planning Time: 8.576 ms
- Execution Time: 723889.536 ms
- ```
- 
- 
-QUERY PLAN on PostgreSQL with LPCE-I
-```                                                                                
- Aggregate  (cost=427264.85..427264.86 rows=1 width=8) (actual time=1868.557..1868.562 rows=1 loops=1)
-   ->  Hash Join  (cost=160193.88..427258.47 rows=2550 width=0) (actual time=1832.465..1866.497 rows=62484 loops=1)
-         Hash Cond: (t.id = mi_idx.movie_id)
-         ->  Hash Join  (cost=134873.05..401930.37 rows=1129 width=20) (actual time=1556.481..1573.421 rows=20828 loops=1)
-               Hash Cond: (mk.keyword_id = k.id)
-               ->  Hash Join  (cost=130735.23..397247.37 rows=740 width=24) (actual time=1533.831..1542.797 rows=20828 loops=1)
-                     Hash Cond: (t.id = mk.movie_id)
-                     ->  Nested Loop  (cost=49524.12..315718.35 rows=187 width=16) (actual time=1257.635..1258.970 rows=628 loops=1)
-                           ->  Hash Join  (cost=49523.69..315169.05 rows=343 width=12) (actual time=972.402..1257.143 rows=976 loops=1)
-                                 Hash Cond: (mi.movie_id = mc.movie_id)
-                                 ->  Seq Scan on movie_info mi  (cost=0.00..265642.62 rows=719 width=4) (actual time=478.885..763.107 rows=6509 loops=1)
-                                       Filter: (info_type_id = 42)
-                                       Rows Removed by Filter: 14829211
-                                 ->  Hash  (cost=49485.71..49485.71 rows=3038 width=8) (actual time=493.463..493.463 rows=35786 loops=1)
-                                       Buckets: 65536 (originally 4096)  Batches: 1 (originally 1)  Memory Usage: 1910kB
-                                       ->  Hash Join  (cost=48010.51..49485.71 rows=3038 width=8) (actual time=352.841..490.290 rows=35786 loops=1)
-                                             Hash Cond: (ml.movie_id = mc.movie_id)
-                                             ->  Seq Scan on movie_link ml  (cost=0.00..1074.93 rows=5078 width=4) (actual time=0.008..3.610 rows=20298 loops=1)
-                                                   Filter: (linked_movie_id < 1142364)
-                                                   Rows Removed by Filter: 39696
-                                             ->  Hash  (cost=46718.11..46718.11 rows=78752 width=4) (actual time=352.388..352.388 rows=1641914 loops=1)
-                                                   Buckets: 131072 (originally 131072)  Batches: 32 (originally 2)  Memory Usage: 3073kB
-                                                   ->  Seq Scan on movie_companies mc  (cost=0.00..46718.11 rows=78752 width=4) (actual time=45.319..186.238 rows=1641914 loops=1)
-                                                         Filter: (id > 967215)
-                                                         Rows Removed by Filter: 967215
-                           ->  Index Scan using title_pkey on title t  (cost=0.43..1.60 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=976)
-                                 Index Cond: (id = mc.movie_id)
-                                 Filter: (production_year < 1980)
-                                 Rows Removed by Filter: 0
-                     ->  Hash  (cost=81003.12..81003.12 rows=16639 width=8) (actual time=260.203..260.203 rows=323876 loops=1)
-                           Buckets: 131072 (originally 32768)  Batches: 8 (originally 1)  Memory Usage: 3073kB
-                           ->  Seq Scan on movie_keyword mk  (cost=0.00..81003.12 rows=16639 width=8) (actual time=0.031..225.671 rows=323876 loops=1)
-                                 Filter: (id < 323877)
-                                 Rows Removed by Filter: 4200054
-               ->  Hash  (cost=1935.70..1935.70 rows=134170 width=4) (actual time=22.335..22.335 rows=134170 loops=1)
-                     Buckets: 131072  Batches: 2  Memory Usage: 3392kB
-                     ->  Seq Scan on keyword k  (cost=0.00..1935.70 rows=134170 width=4) (actual time=0.007..9.339 rows=134170 loops=1)
-         ->  Hash  (cost=24710.44..24710.44 rows=48831 width=4) (actual time=215.226..215.226 rows=1073107 loops=1)
-               Buckets: 131072 (originally 65536)  Batches: 16 (originally 1)  Memory Usage: 3380kB
-               ->  Seq Scan on movie_info_idx mi_idx  (cost=0.00..24710.44 rows=48831 width=4) (actual time=0.025..111.016 rows=1073107 loops=1)
-                     Filter: (id < 1073108)
-                     Rows Removed by Filter: 306928
- Planning Time: 649.617 ms
- Execution Time: 1869.996 ms
-```
-
-
 ### Example 1 of speeding up long-time execution with LPCE
 The query execution time drops from 253265.179ms on PostgreSQL to 7745.517ms with LPCE-I,
 and 4106.392ms with LPCE-R.
@@ -446,3 +335,123 @@ QUERY PLAN with LPCE-R
  Planning Time: 858.474 ms
  Execution Time: 6281.196 ms
 ``` 
+
+
+
+
+
+
+
+
+
+
+
+###  Example of speeding up long-time execution with LPCE
+The query execution time drops from 723889.536ms on PostgreSQL to 1869.996ms with LPCE.
+
+Query: 
+```
+SELECT COUNT(*) FROM title t,movie_companies mc,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,keyword k,movie_link ml WHERE t.id=mc.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id 
+AND t.id=mk.movie_id AND mk.keyword_id=k.id AND t.id=ml.movie_id AND t.production_year<1980 AND mc.id>967215 AND mi.info_type_id=42 AND mi_idx.id<1073108 AND mk.id<323877 AND ml.linked_movie_id<1142364;
+```
+
+QUERY PLAN on PostgreSQL                                                                                     
+```
+ Aggregate  (cost=438085.18..438085.19 rows=1 width=8) (actual time=723887.508..723887.573 rows=1 loops=1)
+   ->  Nested Loop  (cost=352282.24..438085.17 rows=1 width=0) (actual time=1537.609..723869.880 rows=62484 loops=1)
+         Join Filter: (mk.keyword_id = k.id)
+         Rows Removed by Join Filter: 8383415796
+         ->  Hash Join  (cost=352282.24..434472.35 rows=1 width=4) (actual time=1382.189..1522.423 rows=62484 loops=1)
+               Hash Cond: (mk.movie_id = t.id)
+               ->  Seq Scan on movie_keyword mk  (cost=0.00..81003.12 rows=316526 width=8) (actual time=121.044..241.584 rows=323876 loops=1)
+                     Filter: (id < 323877)
+                     Rows Removed by Filter: 4200054
+               ->  Hash  (cost=352282.18..352282.18 rows=5 width=20) (actual time=1257.629..1257.629 rows=1884 loops=1)
+                     Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 112kB
+                     ->  Hash Join  (cost=299378.17..352282.18 rows=5 width=20) (actual time=1098.082..1257.407 rows=1884 loops=1)
+                           Hash Cond: (mc.movie_id = t.id)
+                           ->  Seq Scan on movie_companies mc  (cost=0.00..46718.11 rows=1649559 width=4) (actual time=0.018..169.145 rows=1641914 loops=1)
+                                 Filter: (id > 967215)
+                                 Rows Removed by Filter: 967215
+                           ->  Hash  (cost=299378.08..299378.08 rows=7 width=16) (actual time=992.582..992.582 rows=1656 loops=1)
+                                 Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 94kB
+                                 ->  Hash Join  (cost=270658.21..299378.08 rows=7 width=16) (actual time=851.140..992.423 rows=1656 loops=1)
+                                       Hash Cond: (mi_idx.movie_id = t.id)
+                                       ->  Seq Scan on movie_info_idx mi_idx  (cost=0.00..24710.44 rows=1069165 width=4) (actual time=16.579..98.994 rows=1073107 loops=1)
+                                             Filter: (id < 1073108)
+                                             Rows Removed by Filter: 306928
+                                       ->  Hash  (cost=270657.99..270657.99 rows=17 width=12) (actual time=832.516..832.516 rows=552 loops=1)
+                                             Buckets: 1024  Batches: 1  Memory Usage: 32kB
+                                             ->  Nested Loop  (cost=268711.92..270657.99 rows=17 width=12) (actual time=831.343..832.465 rows=552 loops=1)
+                                                   Join Filter: (mi.movie_id = t.id)
+                                                   ->  Merge Join  (cost=268711.49..268817.82 rows=405 width=8) (actual time=829.655..831.048 rows=766 loops=1)
+                                                         Merge Cond: (mi.movie_id = ml.movie_id)
+                                                         ->  Sort  (cost=266190.65..266211.67 rows=8407 width=4) (actual time=822.496..822.501 rows=27 loops=1)
+                                                               Sort Key: mi.movie_id
+                                                               Sort Method: quicksort  Memory: 498kB
+                                                               ->  Seq Scan on movie_info mi  (cost=0.00..265642.62 rows=8407 width=4) (actual time=710.332..821.258 rows=6509 loops=1)
+                                                                     Filter: (info_type_id = 42)
+                                                                     Rows Removed by Filter: 14829211
+                                                         ->  Sort  (cost=2520.54..2571.07 rows=20214 width=4) (actual time=6.795..7.523 rows=20658 loops=1)
+                                                               Sort Key: ml.movie_id
+                                                               Sort Method: quicksort  Memory: 1720kB
+                                                               ->  Seq Scan on movie_link ml  (cost=0.00..1074.93 rows=20214 width=4) (actual time=0.010..3.996 rows=20298 loops=1)
+                                                                     Filter: (linked_movie_id < 1142364)
+                                                                     Rows Removed by Filter: 39696
+                                                   ->  Index Scan using title_pkey on title t  (cost=0.43..4.53 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=766)
+                                                         Index Cond: (id = ml.movie_id)
+                                                         Filter: (production_year < 1980)
+                                                         Rows Removed by Filter: 0
+         ->  Seq Scan on keyword k  (cost=0.00..1935.70 rows=134170 width=4) (actual time=0.001..5.600 rows=134170 loops=62484)
+ Planning Time: 8.576 ms
+ Execution Time: 723889.536 ms
+ ```
+ 
+ 
+QUERY PLAN on PostgreSQL with LPCE-I
+```                                                                                
+ Aggregate  (cost=427264.85..427264.86 rows=1 width=8) (actual time=1868.557..1868.562 rows=1 loops=1)
+   ->  Hash Join  (cost=160193.88..427258.47 rows=2550 width=0) (actual time=1832.465..1866.497 rows=62484 loops=1)
+         Hash Cond: (t.id = mi_idx.movie_id)
+         ->  Hash Join  (cost=134873.05..401930.37 rows=1129 width=20) (actual time=1556.481..1573.421 rows=20828 loops=1)
+               Hash Cond: (mk.keyword_id = k.id)
+               ->  Hash Join  (cost=130735.23..397247.37 rows=740 width=24) (actual time=1533.831..1542.797 rows=20828 loops=1)
+                     Hash Cond: (t.id = mk.movie_id)
+                     ->  Nested Loop  (cost=49524.12..315718.35 rows=187 width=16) (actual time=1257.635..1258.970 rows=628 loops=1)
+                           ->  Hash Join  (cost=49523.69..315169.05 rows=343 width=12) (actual time=972.402..1257.143 rows=976 loops=1)
+                                 Hash Cond: (mi.movie_id = mc.movie_id)
+                                 ->  Seq Scan on movie_info mi  (cost=0.00..265642.62 rows=719 width=4) (actual time=478.885..763.107 rows=6509 loops=1)
+                                       Filter: (info_type_id = 42)
+                                       Rows Removed by Filter: 14829211
+                                 ->  Hash  (cost=49485.71..49485.71 rows=3038 width=8) (actual time=493.463..493.463 rows=35786 loops=1)
+                                       Buckets: 65536 (originally 4096)  Batches: 1 (originally 1)  Memory Usage: 1910kB
+                                       ->  Hash Join  (cost=48010.51..49485.71 rows=3038 width=8) (actual time=352.841..490.290 rows=35786 loops=1)
+                                             Hash Cond: (ml.movie_id = mc.movie_id)
+                                             ->  Seq Scan on movie_link ml  (cost=0.00..1074.93 rows=5078 width=4) (actual time=0.008..3.610 rows=20298 loops=1)
+                                                   Filter: (linked_movie_id < 1142364)
+                                                   Rows Removed by Filter: 39696
+                                             ->  Hash  (cost=46718.11..46718.11 rows=78752 width=4) (actual time=352.388..352.388 rows=1641914 loops=1)
+                                                   Buckets: 131072 (originally 131072)  Batches: 32 (originally 2)  Memory Usage: 3073kB
+                                                   ->  Seq Scan on movie_companies mc  (cost=0.00..46718.11 rows=78752 width=4) (actual time=45.319..186.238 rows=1641914 loops=1)
+                                                         Filter: (id > 967215)
+                                                         Rows Removed by Filter: 967215
+                           ->  Index Scan using title_pkey on title t  (cost=0.43..1.60 rows=1 width=4) (actual time=0.001..0.001 rows=1 loops=976)
+                                 Index Cond: (id = mc.movie_id)
+                                 Filter: (production_year < 1980)
+                                 Rows Removed by Filter: 0
+                     ->  Hash  (cost=81003.12..81003.12 rows=16639 width=8) (actual time=260.203..260.203 rows=323876 loops=1)
+                           Buckets: 131072 (originally 32768)  Batches: 8 (originally 1)  Memory Usage: 3073kB
+                           ->  Seq Scan on movie_keyword mk  (cost=0.00..81003.12 rows=16639 width=8) (actual time=0.031..225.671 rows=323876 loops=1)
+                                 Filter: (id < 323877)
+                                 Rows Removed by Filter: 4200054
+               ->  Hash  (cost=1935.70..1935.70 rows=134170 width=4) (actual time=22.335..22.335 rows=134170 loops=1)
+                     Buckets: 131072  Batches: 2  Memory Usage: 3392kB
+                     ->  Seq Scan on keyword k  (cost=0.00..1935.70 rows=134170 width=4) (actual time=0.007..9.339 rows=134170 loops=1)
+         ->  Hash  (cost=24710.44..24710.44 rows=48831 width=4) (actual time=215.226..215.226 rows=1073107 loops=1)
+               Buckets: 131072 (originally 65536)  Batches: 16 (originally 1)  Memory Usage: 3380kB
+               ->  Seq Scan on movie_info_idx mi_idx  (cost=0.00..24710.44 rows=48831 width=4) (actual time=0.025..111.016 rows=1073107 loops=1)
+                     Filter: (id < 1073108)
+                     Rows Removed by Filter: 306928
+ Planning Time: 649.617 ms
+ Execution Time: 1869.996 ms
+```
