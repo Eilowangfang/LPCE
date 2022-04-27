@@ -7,9 +7,12 @@ For details, you might check our technical report.
 
 
 
- What I want to achieve is to make nested loop join of PostgreSQL from pipeline processing to nested loop processing.
+ What I want to achieve is to make nested loop join of PostgreSQL from pipeline processing to nested loop processing, as shown in the Figure.
  * Collect all the outer tuples from the outer plan of nested loop join, and materialize the tuples at a tuplestorestate.
  * Fetch one outer tuple, and scan all the inner tuples to match join result tuples.
+ [nlj_blocked.pdf](https://github.com/Eilowangfang/LPCE/files/8571939/nlj_blocked.pdf)
+ 
+
 
 
 
