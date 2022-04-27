@@ -154,5 +154,6 @@ Refer to the details in `/LPCE_inPostgres/postgres_reopt`.
 
 
 <br/>
+
 ## Acknowledgment
 LPCE is based on [AQO](https://github.com/postgrespro/aqo) ([Adaptive Cardinality Estimation](https://arxiv.org/abs/1711.08330)) implementation as an extension tool for PostgreSQL.
