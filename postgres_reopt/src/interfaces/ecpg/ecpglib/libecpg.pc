@@ -1,0 +1,9 @@
+Name: libecpg
+Description: PostgreSQL libecpg library
+Url: https://www.postgresql.org/
+Version: 13.0
+Requires: 
+Requires.private: libpq libpgtypes
+Cflags: -I/home/dbgroup/csfwang/postgresql/include
+Libs: -L/home/dbgroup/csfwang/postgresql/lib -lecpg
+Libs.private:  -lm

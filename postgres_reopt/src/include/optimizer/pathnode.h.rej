@@ -1,0 +1,13 @@
+--- src/include/optimizer/pathnode.h
++++ src/include/optimizer/pathnode.h
+@@ -18,6 +18,10 @@
+ #include "nodes/pathnodes.h"
+ 
+ 
++typedef void (*set_parampathinfo_postinit_hook_type) (ParamPathInfo *ppi);
++
++extern PGDLLIMPORT set_parampathinfo_postinit_hook_type parampathinfo_postinit_hook;
++
+ /*
+  * prototypes for pathnode.c
+  */

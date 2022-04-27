@@ -1,0 +1,32 @@
+--- src/backend/optimizer/util/relnode.c
++++ src/backend/optimizer/util/relnode.c
+@@ -1264,6 +1264,7 @@ find_childrel_parents(PlannerInfo *root, RelOptInfo *rel)
+ }
+ 
+ 
++set_parampathinfo_postinit_hook_type parampathinfo_postinit_hook = NULL;
+ /*
+  * get_baserel_parampathinfo
+  *		Get the ParamPathInfo for a parameterized path for a base relation,
+@@ -1332,6 +1333,10 @@ get_baserel_parampathinfo(PlannerInfo *root, RelOptInfo *baserel,
+ 	ppi->ppi_req_outer = required_outer;
+ 	ppi->ppi_rows = rows;
+ 	ppi->ppi_clauses = pclauses;
++
++	if (parampathinfo_postinit_hook)
++		(*parampathinfo_postinit_hook)(ppi);
++
+ 	baserel->ppilist = lappend(baserel->ppilist, ppi);
+ 
+ 	return ppi;
+@@ -1557,6 +1562,10 @@ get_joinrel_parampathinfo(PlannerInfo *root, RelOptInfo *joinrel,
+ 	ppi->ppi_req_outer = required_outer;
+ 	ppi->ppi_rows = rows;
+ 	ppi->ppi_clauses = NIL;
++
++	if (parampathinfo_postinit_hook)
++			(*parampathinfo_postinit_hook)(ppi);
++
+ 	joinrel->ppilist = lappend(joinrel->ppilist, ppi);
+ 
+ 	return ppi;
