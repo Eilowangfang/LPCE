@@ -140,6 +140,13 @@ Execute SQL query:
 `EXPLAIN ANALYZE SQL QUERY`
 
 
+
+
+
+
+
+<br/> 
+
 ## PostgreSQL to support query re-optimization
 You need to make the postgreSQL support query re-optimization before applying LPCE.
 Refer to the details in `/LPCE_inPostgres/postgres_reopt`. 
