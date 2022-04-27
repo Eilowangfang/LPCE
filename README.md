@@ -2,6 +2,9 @@
 # LPCE
 This is for paper submission: "Speeding Up End-to-end Query Execution via Learning-based Progressive Cardinality Estimation".
 
+
+<br/> 
+
 ## LPCE-I
 In `LPCE-I` directory:
 
@@ -37,6 +40,23 @@ there is an example ready model `example_model.pth`, which can be further compre
 
 
 
+<br/> 
+
+## Distillation
+In `Distill` directory:
+
+To further compress LPCE-I model with knowledge distillation, run:
+```
+python3  lpce_distill.py
+```
+In `lpce_distill` directory:
+there are `sru_distill.py` that enables SRU student model to extract knowledge from teacher model,
+and `trainer_distll.py` that guides the training flow with teacher model, which contains the loss computation of hint and prediction loss.
+
+
+
+<br/> 
+
 ## LPCE-R
 In `LPCE-R` directory:
 
@@ -60,8 +80,6 @@ The training set is `/data/train10K`.
 The testing set is `/queries` used for evaluating the estimation error during training. 
 The mode could be configured as `Train` for training a model, or `Test` for inference in `lpcer.py`.
 
-In `model` directory:
-there is example ready models, which can be further compressed via knowledge distillation.
 
 
 
@@ -70,8 +88,8 @@ there is example ready models, which can be further compressed via knowledge dis
 
 
 
-
-
+<br/> 
+ 
 ## Call LPCE in PostgreSQL
 LPCE can be called in PostgreSQL.
 LPCE can used to provide cardinality estimation for plan search in PostgreSQL.
