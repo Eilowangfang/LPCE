@@ -1,6 +1,9 @@
 # PG_NestedLoopJoin_BlockedProcessing
-This code is for changing the nested loop join implementation of PostgreSQL from pipeline processing to nested loop processing.
+This code is for modifying the PostgreSQL to support query re-optimization with LCPE.
 
+The modification are mostly at: 
+* changing the nested loop join implementation of PostgreSQL from pipeline processing to nested loop processing.
+* considering the cost of done executed subplan into cost calculation at re-optimization stage.
 
 
 For details, you might check our technical report.
