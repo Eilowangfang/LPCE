@@ -9,3 +9,4 @@ Each query set has 100 queries with 2, 4, 6, 8 joins
 ![learn_vs_real](https://user-images.githubusercontent.com/52020936/170882637-b9e3f3e3-b1e9-498c-8bef-721fdb304ba4.png)
 
 We can observe that the accurate estimations are more important to complex queries, as there is performance gap to reach the optimal one.
+In such queries, it's more likely that the higher accuracy of learned model can contribute to a better plan.
