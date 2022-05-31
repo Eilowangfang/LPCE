@@ -1,7 +1,5 @@
 # This is as appendix for SIGMOD auther feedback.
 
-![q_e](https://user-images.githubusercontent.com/52020936/171157120-49d6b894-e9d2-4b41-bd28-560bc5284663.png)
-
 ![q_e](https://user-images.githubusercontent.com/52020936/171160080-6c6e4d73-ceda-4b74-8b59-fe75f8663d91.png)
 
 ## The intuition that LPCE should be used for the query complex such as having many joins. 
