@@ -1,5 +1,6 @@
 # This is as appendix for SIGMOD auther feedback.
 
+## R#2 O2
 The table shows the estimation q-error of MSCN and LPCE-I on Join-six queries.
 ![q_e](https://user-images.githubusercontent.com/52020936/171160080-6c6e4d73-ceda-4b74-8b59-fe75f8663d91.png)
 
