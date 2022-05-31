@@ -1,5 +1,8 @@
 # This is as appendix for SIGMOD auther feedback.
 
+![q_e](https://user-images.githubusercontent.com/52020936/171157120-49d6b894-e9d2-4b41-bd28-560bc5284663.png)
+
+
 ## The intuition that LPCE should be used for the query complex such as having many joins. 
 ```
 Experiment setting
@@ -11,3 +14,4 @@ Each query set has 100 queries with 2, 4, 6, 8 joins.
 
 We can observe that the accurate estimations are more important to complex queries, as there is performance gap to reach the optimal one.
 In such queries, it's more likely that the higher accuracy of learned model can contribute to a better plan.
+
