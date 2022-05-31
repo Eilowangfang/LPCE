@@ -2,8 +2,7 @@
 
 ## R#2 O2
 The table shows the estimation q-error of MSCN and LPCE-I on Join-six queries.
-![q_e](https://user-images.githubusercontent.com/52020936/171166788-89f56f22-f7a1-41ec-8687-3ad6170bcaa2.png)
-![q_e](https://user-images.githubusercontent.com/52020936/171166985-dbad7f60-b471-4643-84d2-d19390129ab6.png)
+
 ![q_e1](https://user-images.githubusercontent.com/52020936/171167155-ff6673ae-895e-44a9-846e-d4a2b2b5a502.png)
 
 Our main proposal, progressive cardinality estimation, works better for complex queries with many joins. 
