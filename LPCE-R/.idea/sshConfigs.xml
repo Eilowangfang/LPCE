@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="10.20.17.151" id="bdafc0c2-32ea-4df3-b889-e8538ebca14f" port="22" customName="v100s" nameFormat="CUSTOM" username="dbgroup">
+        <option name="customName" value="v100s" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>
