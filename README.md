@@ -1,7 +1,8 @@
 
 # LPCE
 This is for SIGMOD 2023 paper: "Speeding Up End-to-end Query Execution via Learning-based Progressive Cardinality Estimation".
-This branch is only for author's use.
+
+Note that this branch is only for author's use.
 
 <br/> 
 
