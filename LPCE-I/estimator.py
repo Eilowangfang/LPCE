@@ -5,7 +5,7 @@ from encode import *
 from caller import *
 
 
-def paraser(query):
+def cardEst(query, model_path):
 
     input_dim = 256 # hidden unit of embed module
     mem_dim = 1024 #
@@ -22,7 +22,8 @@ def paraser(query):
 
     torch.cuda.set_device(GPU_no)
     model = SRU(cuda_use, feature_dim, input_dim, mem_dim, hidden_dim)
-    path = os.path.join(os.path.abspath('.'), "model/example_model.pth")
+    path = model_path
+    #path = os.path.join(os.path.abspath('.'), "/home/dbgroup/lpce/LPCE/LPCE-I/model/example_model.pth")
     model.load_state_dict(torch.load(path, map_location='cpu'))
     caller = Caller(cuda_use, model, min_label, max_label, operat_dim, tb_dim, filter_dim, join_dim)
 
@@ -111,9 +112,16 @@ def paraser(query):
         memCard.append(ln_Card)
         memState.append(ln_State)
 
-
     #for i in range(len(memCard)):
     #    print("Total card: ", len(memCard[i]))
+
+    relids = []
+    for i in range(len(memRel)):
+        for j in range(len(memRel[i])):
+            red = 0
+            for x in memRel[i][j]:
+                red += pow(2, x + 1)
+            relids.append(red)
 
     predict_card = []
     for i in range(len(memCard)):
@@ -123,9 +131,10 @@ def paraser(query):
     end_time = time.time()
     print("Number of cardinalities to estimate:", len(predict_card))
     print("Model inference time: ", (end_time - start_time)*1000.0, "ms")
-
     print("Learned estimator outputs cardinality:")
     print(predict_card)
+    print(relids)
+    return relids, predict_card
 
 
 
@@ -584,12 +593,25 @@ def rewrite_query(query):
 
 
 
+#usage:
+# python3 estimator.py QUERY
+#return:
+# Number of cardinalities to estimate: 96
+# Model inference time:  35.635948181152344 ms
+# Learned estimator outputs cardinality:
+# [345086, 507478, 19613, 393467...]
 if __name__ == '__main__':
-    #
+    #Test query example
     #query = "SELECT COUNT(*) FROM title t,movie_companies mc,cast_info ci,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,keyword k,aka_title at,complete_cast cc WHERE t.id=mc.movie_id AND t.id=ci.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id AND t.id=mk.movie_id AND mk.keyword_id=k.id AND t.id=at.movie_id AND t.id=cc.movie_id AND mc.id<1965148 AND ci.person_id>3063162 AND mi.info_type_id=3 AND mi_idx.id>1335393 AND k.keyword>85543 AND at.production_year<1924 AND cc.status_id=3;"
     #query = "SELECT COUNT(*) FROM title t,movie_companies mc,cast_info ci,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,keyword k WHERE t.id=mc.movie_id AND t.id=ci.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id AND t.id=mk.movie_id AND mk.keyword_id=k.id AND t.production_year<1905 AND mc.id<1572602 AND ci.role_id=8 AND mi.info_type_id=42 AND mi_idx.id<1264333 AND mk.id>2493270 AND k.keyword<95670;"
     #query = "SELECT COUNT(*) FROM title t,movie_companies mc,cast_info ci,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,keyword k WHERE t.id=mc.movie_id AND t.id=ci.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id AND t.id=mk.movie_id AND mk.keyword_id=k.id AND t.production_year>1895 AND mc.id>356335 AND ci.role_id=4 AND mi.id<434495 AND mi_idx.id>769638 AND k.keyword=1677;"
     #query = "SELECT COUNT(*) FROM title t,movie_companies mc,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,keyword k,movie_link ml WHERE t.id=mc.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id AND t.id=mk.movie_id AND mk.keyword_id=k.id AND t.id=ml.movie_id AND t.production_year<1995 AND mc.id>967215 AND mi.info_type_id=42 AND mi_idx.id<1073108 AND mk.id<323877 AND ml.linked_movie_id<1142364;"
     query = str(sys.argv[1])
-    #query = "SELECT COUNT(*) FROM title t,movie_companies mc,cast_info ci,movie_info mi,movie_info_idx mi_idx,movie_keyword mk,movie_link ml,aka_title at,complete_cast cc WHERE t.id=mc.movie_id AND t.id=ci.movie_id AND t.id=mi.movie_id AND t.id=mi_idx.movie_id AND t.id=mk.movie_id AND t.id=ml.movie_id AND t.id=at.movie_id AND t.id=cc.movie_id AND mc.id<1028764 AND ci.person_id<459871 AND mi.info_type_id=86 AND mi_idx.id<98052 AND ml.linked_movie_id<2403289 AND at.production_year>1906 AND cc.status_id=4;"
-    paraser(query)
+    model_path = "/home/dbgroup/lpce/LPCE/LPCE-I/model/example_model.pth"
+    result_path = "/home/dbgroup/lpce/LPCE/LPCE-I/est_cards.txt"
+
+    relids, predict_card = cardEst(query, model_path)
+    f = open(result_path, 'w')
+    assert(len(relids) == len(predict_card))
+    for i in range(len(relids)):
+        f.write(str(relids[i]) + "," + str(predict_card[i]) + '\n')
