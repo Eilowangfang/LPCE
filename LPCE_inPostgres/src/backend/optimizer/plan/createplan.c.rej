@@ -1,0 +1,110 @@
+--- src/backend/optimizer/plan/createplan.c
++++ src/backend/optimizer/plan/createplan.c
+@@ -1711,7 +1709,7 @@ create_unique_plan(PlannerInfo *root, UniquePath *best_path, int flags)
+ 	}
+ 
+ 	/* Copy cost data from Path to Plan */
+-	copy_generic_path_info(root, plan, &best_path->path);
++	copy_generic_path_info(plan, &best_path->path);
+ 
+ 	return plan;
+ }
+@@ -1744,7 +1742,7 @@ create_gather_plan(PlannerInfo *root, GatherPath *best_path)
+ 							  best_path->single_copy,
+ 							  subplan);
+ 
+-	copy_generic_path_info(root, &gather_plan->plan, &best_path->path);
++	copy_generic_path_info(&gather_plan->plan, &best_path->path);
+ 
+ 	/* use parallel mode for parallel plans. */
+ 	root->glob->parallelModeNeeded = true;
+@@ -1773,7 +1771,7 @@ create_gather_merge_plan(PlannerInfo *root, GatherMergePath *best_path)
+ 	gm_plan = makeNode(GatherMerge);
+ 	gm_plan->plan.targetlist = tlist;
+ 	gm_plan->num_workers = best_path->num_workers;
+-	copy_generic_path_info(root, &gm_plan->plan, &best_path->path);
++	copy_generic_path_info(&gm_plan->plan, &best_path->path);
+ 
+ 	/* Assign the rescan Param. */
+ 	gm_plan->rescan_param = assign_special_exec_param(root);
+@@ -1901,7 +1899,7 @@ create_projection_plan(PlannerInfo *root, ProjectionPath *best_path, int flags)
+ 		/* We need a Result node */
+ 		plan = (Plan *) make_result(tlist, NULL, subplan);
+ 
+-		copy_generic_path_info(root, plan, (Path *) best_path);
++		copy_generic_path_info(plan, (Path *) best_path);
+ 	}
+ 
+ 	return plan;
+@@ -2028,7 +2026,7 @@ create_incrementalsort_plan(PlannerInfo *root, IncrementalSortPath *best_path,
+ 											  best_path->spath.path.parent->relids : NULL,
+ 											  best_path->nPresortedCols);
+ 
+-	copy_generic_path_info(root, &plan->sort.plan, (Path *) best_path);
++	copy_generic_path_info(&plan->sort.plan, (Path *) best_path);
+ 
+ 	return plan;
+ }
+@@ -2341,7 +2339,7 @@ create_groupingsets_plan(PlannerInfo *root, GroupingSetsPath *best_path)
+ 						subplan);
+ 
+ 		/* Copy cost data from Path to Plan */
+-		copy_generic_path_info(root, &plan->plan, &best_path->path);
++		copy_generic_path_info(&plan->plan, &best_path->path);
+ 	}
+ 
+ 	return (Plan *) plan;
+@@ -2518,7 +2516,7 @@ create_windowagg_plan(PlannerInfo *root, WindowAggPath *best_path)
+ 						  wc->inRangeNullsFirst,
+ 						  subplan);
+ 
+-	copy_generic_path_info(root, &plan->plan, (Path *) best_path);
++	copy_generic_path_info(&plan->plan, (Path *) best_path);
+ 
+ 	return plan;
+ }
+@@ -2554,7 +2552,7 @@ create_setop_plan(PlannerInfo *root, SetOpPath *best_path, int flags)
+ 					  best_path->firstFlag,
+ 					  numGroups);
+ 
+-	copy_generic_path_info(root, &plan->plan, (Path *) best_path);
++	copy_generic_path_info(&plan->plan, (Path *) best_path);
+ 
+ 	return plan;
+ }
+@@ -2590,7 +2588,7 @@ create_recursiveunion_plan(PlannerInfo *root, RecursiveUnionPath *best_path)
+ 								best_path->distinctList,
+ 								numGroups);
+ 
+-	copy_generic_path_info(root, &plan->plan, (Path *) best_path);
++	copy_generic_path_info(&plan->plan, (Path *) best_path);
+ 
+ 	return plan;
+ }
+@@ -2613,7 +2611,7 @@ create_lockrows_plan(PlannerInfo *root, LockRowsPath *best_path,
+ 
+ 	plan = make_lockrows(subplan, best_path->rowMarks, best_path->epqParam);
+ 
+-	copy_generic_path_info(root, &plan->plan, (Path *) best_path);
++	copy_generic_path_info(&plan->plan, (Path *) best_path);
+ 
+ 	return plan;
+ }
+@@ -2674,7 +2672,7 @@ create_modifytable_plan(PlannerInfo *root, ModifyTablePath *best_path)
+ 							best_path->onconflict,
+ 							best_path->epqParam);
+ 
+-	copy_generic_path_info(root, &plan->plan, &best_path->path);
++	copy_generic_path_info(&plan->plan, &best_path->path);
+ 
+ 	return plan;
+ }
+@@ -2728,7 +2726,7 @@ create_limit_plan(PlannerInfo *root, LimitPath *best_path, int flags)
+ 					  best_path->limitOption,
+ 					  numUniqkeys, uniqColIdx, uniqOperators, uniqCollations);
+ 
+-	copy_generic_path_info(root, &plan->plan, (Path *) best_path);
++	copy_generic_path_info(&plan->plan, (Path *) best_path);
+ 
+ 	return plan;
+ }

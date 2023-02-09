@@ -1,0 +1,22 @@
+--- src/include/commands/explain.h
++++ src/include/commands/explain.h
+@@ -75,6 +75,19 @@ extern PGDLLIMPORT ExplainOneQuery_hook_type ExplainOneQuery_hook;
+ typedef const char *(*explain_get_index_name_hook_type) (Oid indexId);
+ extern PGDLLIMPORT explain_get_index_name_hook_type explain_get_index_name_hook;
+ 
++/* Hook for plugins to get control in ExplainOnePlan() */
++typedef void (*ExplainOnePlan_hook_type) (PlannedStmt *plannedstmt, IntoClause *into,
++			   ExplainState *es, const char *queryString,
++			   ParamListInfo params, const instr_time *planduration,
++			   QueryEnvironment *queryEnv);
++extern PGDLLIMPORT ExplainOnePlan_hook_type ExplainOnePlan_hook;
++
++/* Explain a node info */
++typedef void (*ExplainOneNode_hook_type) (ExplainState *es,
++										 PlanState *ps,
++										 Plan *plan,
++										 double rows);
++extern PGDLLIMPORT ExplainOneNode_hook_type ExplainOneNode_hook;
+ 
+ extern void ExplainQuery(ParseState *pstate, ExplainStmt *stmt,
+ 						 ParamListInfo params, DestReceiver *dest);
