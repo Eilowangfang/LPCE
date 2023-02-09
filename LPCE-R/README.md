@@ -1,6 +1,6 @@
 
 # LPCE-R
-This.
+This presents how train and use LPCE-R
 
 <br/> 
 
